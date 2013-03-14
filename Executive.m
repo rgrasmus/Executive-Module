@@ -170,9 +170,10 @@ DoExit();
         
         ori_threshold = nan;
         if (strcmpi(task_state_config.reach_tgt,'tgt'))
-            ori_threshold = XM.ori_threshold*(pi/180);
+            ori_threshold = XM.ori_threshold;
         end
-        
+        trans_judge = task_state_config.trans_judge;
+        reach_type = task_state_config.reach_type;
         msg = RTMA.MDF.TASK_STATE_CONFIG;
         msg.id = int32(id);
         msg.rep_num = int32(XM.rep_num);
@@ -187,6 +188,8 @@ DoExit();
         msg.dims = XM.config.dims;
         msg.tgt_sz = XM.tgt_sz;
         msg.timeout = double(Timeout);
+        msg.trans_judge(1:length(trans_judge)) = int8(trans_judge);
+        msg.reach_type(1:length(reach_type)) = int8(reach_type);
         if isfield(task_state_config, 'tags')
             tags = task_state_config.tags;
             if iscell(tags)
@@ -210,7 +213,7 @@ DoExit();
         
         if (strcmp(rcv_event.msg_type, 'JUDGE_VERDICT'))
             %fprintf('(%s)', rcv_event.data.reason);
-            if(~strcmp(rcv_event.data.reason, 'TIMED_OUT'))
+            if any(strcmp(rcv_event.data.reason, {'HIT','THRESHOLD'}))
                 % if SimpleJudge didn't timeout, invert JUDGE_VERDICT consequence
                 % (because ConfigureTaskStateEvents configures it for timeout)
                 EVENT_MAP.JUDGE_VERDICT = ~task_state_config.timed_out_conseq;

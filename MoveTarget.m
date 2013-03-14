@@ -10,8 +10,8 @@ function MoveTarget(PosName, TgtLoc, Cori)
     global RTMA;
     switch PosName
         case 'Present'
-            SendMessage('JVR_HIDE_HOME');
-            SendMessage('JVR_SHOW_TGT');
+            SendSignal JVR_HIDE_HOME;
+            SendSignal JVR_SHOW_TGT;
             vrm = RTMA.MDF.JVR_SET_TGT_POS;
             
             XM.VR_TGT.CurrentMoveID = XM.VR_TGT.CurrentMoveID + 1;
@@ -21,8 +21,8 @@ function MoveTarget(PosName, TgtLoc, Cori)
             vrm.orimtx = Cori;
             SendMessage('JVR_SET_TGT_POS', vrm);
         case 'Home'            
-            SendMessage('JVR_HIDE_TGT');
-            SendMessage('JVR_SHOW_HOME');
+            SendSignal JVR_HIDE_TGT;
+            SendSignal JVR_SHOW_HOME;
             vrm = RTMA.MDF.JVR_SET_HOME_POS;
             XM.VR_TGT.CurrentMoveID = XM.VR_TGT.CurrentMoveID+1;
             
